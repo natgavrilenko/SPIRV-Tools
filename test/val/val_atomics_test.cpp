@@ -826,7 +826,7 @@ TEST_F(ValidateAtomics, AtomicLoadVulkanRelease) {
               AnyVUID("VUID-StandaloneSpirv-MemorySemantics-10002"));
   EXPECT_THAT(
       getDiagnosticString(),
-      HasSubstr("AtomicLoad must have Relaxed or Acquire memory order"));
+      HasSubstr("AtomicLoad must not use Release or AcquireRelease memory order"));
 }
 
 TEST_F(ValidateAtomics, AtomicLoadVulkanAcquireRelease) {
@@ -840,7 +840,7 @@ TEST_F(ValidateAtomics, AtomicLoadVulkanAcquireRelease) {
               AnyVUID("VUID-StandaloneSpirv-MemorySemantics-10002"));
   EXPECT_THAT(
       getDiagnosticString(),
-      HasSubstr("AtomicLoad must have Relaxed or Acquire memory order"));
+      HasSubstr("AtomicLoad must not use Release or AcquireRelease memory order"));
 }
 
 TEST_F(ValidateAtomics, AtomicLoadVulkanSequentiallyConsistent) {
@@ -853,8 +853,8 @@ TEST_F(ValidateAtomics, AtomicLoadVulkanSequentiallyConsistent) {
   EXPECT_THAT(getDiagnosticString(),
               AnyVUID("VUID-StandaloneSpirv-MemorySemantics-10005"));
   EXPECT_THAT(getDiagnosticString(),
-              HasSubstr("Memory Semantics must not have SequentiallyConsistent "
-                        "memory order in Vulkan environment"));
+              HasSubstr("Memory Semantics must not use SequentiallyConsistent "
+                        "memory order in Vulkan environmen"));
 }
 
 TEST_F(ValidateAtomics, AtomicLoadVulkanInvocationSemantics) {
@@ -869,7 +869,7 @@ TEST_F(ValidateAtomics, AtomicLoadVulkanInvocationSemantics) {
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("AtomicLoad: Vulkan specification requires Memory Semantics to "
-                "be None if used with Invocation Memory Scope"));
+                "be Relaxed if used with Invocation Memory Scope"));
 }
 
 TEST_F(ValidateAtomics, AtomicLoadShaderFloat) {
@@ -1085,7 +1085,7 @@ OpAtomicStore %u32_var %device %acquire_uniform_workgroup %u32_1
               AnyVUID("VUID-StandaloneSpirv-MemorySemantics-10003"));
   EXPECT_THAT(
       getDiagnosticString(),
-      HasSubstr("AtomicStore must have Relaxed or Release memory order"));
+      HasSubstr("AtomicStore must not use Acquire or AcquireRelease memory order"));
 }
 
 TEST_F(ValidateAtomics, AtomicStoreVulkanAcquireRelease) {
@@ -1099,7 +1099,7 @@ OpAtomicStore %u32_var %device %acquire_release_uniform_workgroup %u32_1
               AnyVUID("VUID-StandaloneSpirv-MemorySemantics-10003"));
   EXPECT_THAT(
       getDiagnosticString(),
-      HasSubstr("AtomicStore must have Relaxed or Release memory order"));
+      HasSubstr("AtomicStore must not use Acquire or AcquireRelease memory order"));
 }
 
 TEST_F(ValidateAtomics, AtomicStoreVulkanSequentiallyConsistent) {
@@ -1112,8 +1112,8 @@ OpAtomicStore %u32_var %device %sequentially_consistent %u32_1
   EXPECT_THAT(getDiagnosticString(),
               AnyVUID("VUID-StandaloneSpirv-MemorySemantics-10005"));
   EXPECT_THAT(getDiagnosticString(),
-              HasSubstr("Memory Semantics must not have SequentiallyConsistent "
-                        "memory order in Vulkan environment"));
+              HasSubstr("Memory Semantics must not use SequentiallyConsistent "
+                        "memory order in Vulkan environmen"));
 }
 
 TEST_F(ValidateAtomics, AtomicStoreVulkanInvocationSemantics) {
@@ -1128,7 +1128,7 @@ OpAtomicStore %u32_var %invocation %release_uniform_workgroup %u32_1
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("AtomicStore: Vulkan specification requires Memory Semantics "
-                "to be None if used with Invocation Memory Scope"));
+                "to be Relaxed if used with Invocation Memory Scope"));
 }
 
 TEST_F(ValidateAtomics, AtomicStoreWrongPointerType) {
@@ -1343,7 +1343,7 @@ OpAtomicStore %u32_var %invocation %relaxed %u32_1
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("AtomicExchange: Vulkan specification requires Memory "
-                "Semantics to be None if used with Invocation Memory Scope"));
+                "Semantics to be Relaxed if used with Invocation Memory Scope"));
 }
 
 TEST_F(ValidateAtomics, AtomicCompareExchangeShaderSuccess) {
@@ -1466,9 +1466,8 @@ OpAtomicStore %u32_var %device %relaxed %u32_1
   CompileSuccessfully(GenerateKernelCode(body));
   ASSERT_EQ(SPV_ERROR_INVALID_DATA, ValidateInstructions());
   EXPECT_THAT(getDiagnosticString(),
-              HasSubstr("AtomicCompareExchange Unequal Memory Semantics "
-                        "must have Relaxed, Acquire, or SequentiallyConsistent "
-                        "memory order"));
+              HasSubstr("AtomicCompareExchange Unequal Memory Semantics must not "
+                        "use Release or AcquireRelease memory order"));
 }
 
 TEST_F(ValidateAtomics, AtomicCompareExchangeWrongValueType) {
@@ -1533,7 +1532,7 @@ OpAtomicStore %u32_var %device %relaxed %u32_1
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("AtomicCompareExchange: Vulkan specification requires Memory "
-                "Semantics to be None if used with Invocation Memory Scope"));
+                "Semantics to be Relaxed if used with Invocation Memory Scope"));
 }
 
 TEST_F(ValidateAtomics, AtomicCompareExchangeVulkanInvocationSemanticsUnequal) {
@@ -1549,7 +1548,7 @@ OpAtomicStore %u32_var %device %relaxed %u32_1
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("AtomicCompareExchange: Vulkan specification requires Memory "
-                "Semantics to be None if used with Invocation Memory Scope"));
+                "Semantics to be Relaxed if used with Invocation Memory Scope"));
 }
 
 TEST_F(ValidateAtomics, AtomicArithmeticsSuccess) {
@@ -1664,8 +1663,8 @@ OpAtomicFlagClear %u32_var %device %acquire
   CompileSuccessfully(GenerateKernelCode(body));
   ASSERT_EQ(SPV_ERROR_INVALID_DATA, ValidateInstructions());
   EXPECT_THAT(getDiagnosticString(),
-              HasSubstr("AtomicFlagClear must have Relaxed, Release, "
-                        "or SequentiallyConsistent memory order"));
+              HasSubstr("AtomicFlagClear must not use Acquire or "
+                        "AcquireRelease memory order"));
 }
 
 TEST_F(ValidateAtomics, AtomicFlagClearNotPointer) {
@@ -1741,8 +1740,7 @@ OpAtomicStore %u32_var %device %relaxed %u32_1
   ASSERT_EQ(SPV_ERROR_INVALID_DATA, ValidateInstructions());
   EXPECT_THAT(getDiagnosticString(),
               HasSubstr("AtomicIIncrement: Memory Semantics must have at most "
-                        "one non-relaxed memory order bit set (Acquire, "
-                        "Release, AcquireRelease, or SequentiallyConsistent)"));
+                        "one non-relaxed memory order bit set"));
 }
 
 TEST_F(ValidateAtomics, AtomicUniformMemorySemanticsShader) {
@@ -1900,7 +1898,7 @@ OpFunctionEnd
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("AtomicStore: Memory Semantics with MakeAvailable flag must "
-                "have Release or AcquireRelease memory order"));
+                "use Release or AcquireRelease memory order"));
 }
 
 TEST_F(ValidateAtomics, MakeVisibleKHRRequiresAcquireSemantics) {
@@ -1930,7 +1928,7 @@ OpFunctionEnd
             ValidateInstructions(SPV_ENV_UNIVERSAL_1_3));
   EXPECT_THAT(
       getDiagnosticString(),
-      HasSubstr("AtomicLoad: Memory Semantics with MakeVisible flag must have "
+      HasSubstr("AtomicLoad: Memory Semantics with MakeVisible flag must use "
                 "Acquire or AcquireRelease memory order"));
 }
 
@@ -1962,8 +1960,8 @@ OpFunctionEnd
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("AtomicStore: Memory Semantics with a non-relaxed memory order "
-                "(Acquire, Release, or AcquireRelease) must have at least one "
-                "storage class semantics flag (UniformMemory, WorkgroupMemory, "
+                "must use at least one Vulkan-supported storage "
+                "class semantics flag (UniformMemory, WorkgroupMemory, "
                 "ImageMemory, or OutputMemory)"));
 }
 
@@ -1995,8 +1993,8 @@ OpFunctionEnd
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("AtomicLoad: Memory Semantics with a non-relaxed memory order "
-                "(Acquire, Release, or AcquireRelease) must have at least one "
-                "storage class semantics flag (UniformMemory, WorkgroupMemory, "
+                "must use at least one Vulkan-supported storage "
+                "class semantics flag (UniformMemory, WorkgroupMemory, "
                 "ImageMemory, or OutputMemory)"));
 }
 

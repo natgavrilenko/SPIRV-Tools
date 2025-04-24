@@ -216,8 +216,8 @@ INSTANTIATE_TEST_SUITE_P(
         Values(TestResult(
             SPV_ERROR_INVALID_DATA,
             "VUID-StandaloneSpirv-MemorySemantics-10001",
-            "Memory Semantics must have at most one non-relaxed memory order "
-            "bit set (Acquire, Release, or AcquireRelease)"))));
+            "Memory Semantics must have at most one non-relaxed "
+            "memory order bit set"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorAtomicLoadWithReleaseMemoryOrder, VulkanSemantics,
@@ -231,7 +231,8 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10002",
-                "AtomicLoad must have Relaxed or Acquire memory order"))));
+                "AtomicLoad must not use Release or AcquireRelease "
+                "memory order"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorAtomicStoreWithAcquireMemoryOrder, VulkanSemantics,
@@ -245,7 +246,8 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10003",
-                "AtomicStore must have Relaxed or Release memory order"))));
+                "AtomicStore must not use Acquire or AcquireRelease "
+                "memory order"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorMemoryBarrierWithRelaxedMemoryOrder, VulkanSemantics,
@@ -259,8 +261,7 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10004",
-                "MemoryBarrier must have Acquire, Release, or AcquireRelease "
-                "memory order"))));
+                "MemoryBarrier must not use Relaxed memory order"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorSequentiallyConsistentMemoryOrder, VulkanSemantics,
@@ -272,7 +273,7 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10005",
-                "Memory Semantics must not have SequentiallyConsistent "
+                "Memory Semantics must not use SequentiallyConsistent "
                 "memory order in Vulkan environment"))));
 
 INSTANTIATE_TEST_SUITE_P(
@@ -287,10 +288,10 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10006",
-                "Memory Semantics with at least one storage class semantics "
-                "flag (UniformMemory, WorkgroupMemory, ImageMemory, or "
-                "OutputMemory) must have a non-relaxed memory order (Acquire, "
-                "Release, or AcquireRelease)"))));
+                "Memory Semantics with at least one Vulkan-supported"
+                "storage class semantics flag (UniformMemory, WorkgroupMemory, "
+                "ImageMemory, or OutputMemory) must use a non-relaxed "
+                "memory order"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorNonRelaxedSemanticsWithoutStorageClass, VulkanSemantics,
@@ -302,8 +303,8 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10007",
-                "Memory Semantics with a non-relaxed memory order (Acquire, "
-                "Release, or AcquireRelease) must have at least one storage "
+                "Memory Semantics with a non-relaxed memory order "
+                "must use at least one Vulkan-supported storage "
                 "class semantics flag (UniformMemory, WorkgroupMemory, "
                 "ImageMemory, or OutputMemory)"))));
 
@@ -317,8 +318,8 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10007",
-                "Memory Semantics with a non-relaxed memory order (Acquire, "
-                "Release, or AcquireRelease) must have at least one storage "
+                "Memory Semantics with a non-relaxed memory order "
+                "must use at least one Vulkan-supported storage "
                 "class semantics flag (UniformMemory, WorkgroupMemory, "
                 "ImageMemory, or OutputMemory)"))));
 
@@ -332,8 +333,8 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10007",
-                "Memory Semantics with a non-relaxed memory order (Acquire, "
-                "Release, or AcquireRelease) must have at least one storage "
+                "Memory Semantics with a non-relaxed memory order "
+                "must use at least one Vulkan-supported storage "
                 "class semantics flag (UniformMemory, WorkgroupMemory, "
                 "ImageMemory, or OutputMemory)"))));
 
@@ -346,7 +347,7 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10008",
-                "Memory Semantics with MakeAvailable flag must have Release "
+                "Memory Semantics with MakeAvailable flag must use Release "
                 "or AcquireRelease memory order"))));
 
 INSTANTIATE_TEST_SUITE_P(
@@ -360,7 +361,7 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10008",
-                "Memory Semantics with MakeAvailable flag must have Release "
+                "Memory Semantics with MakeAvailable flag must use Release "
                 "or AcquireRelease memory order"))));
 
 INSTANTIATE_TEST_SUITE_P(
@@ -371,8 +372,8 @@ INSTANTIATE_TEST_SUITE_P(
         ValuesInExcept(TestOps, TestOpsCount, OpMemoryBarrier),
         Values(TestResult(SPV_ERROR_INVALID_DATA,
                           "VUID-StandaloneSpirv-MemorySemantics-10009",
-                          "Memory Semantics with MakeVisible flag must have "
-                          "Acquire or AcquireRelease memory order"))));
+                          "Memory Semantics with MakeVisible flag must use Acquire "
+                          "or AcquireRelease memory order"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorMakeVisibleWithReleaseMemoryOrder, VulkanSemantics,
@@ -385,8 +386,8 @@ INSTANTIATE_TEST_SUITE_P(
         ValuesInExcept(TestOps, TestOpsCount, OpAtomicLoad),
         Values(TestResult(SPV_ERROR_INVALID_DATA,
                           "VUID-StandaloneSpirv-MemorySemantics-10009",
-                          "Memory Semantics with MakeVisible flag must have "
-                          "Acquire or AcquireRelease memory order"))));
+                          "Memory Semantics with MakeVisible flag must use Acquire "
+                          "or AcquireRelease memory order"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorVolatileBarrierWithRelaxedSemantics, VulkanSemantics,
@@ -397,7 +398,7 @@ INSTANTIATE_TEST_SUITE_P(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10010",
                 "Memory Semantics Volatile flag must not be used with "
-                "barrier instructions (MemoryBarrier and ControlBarrier)"))));
+                "barrier instructions (MemoryBarrier or ControlBarrier)"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorVolatileBarrierWithNonRelaxedSemantics, VulkanSemantics,
@@ -413,7 +414,7 @@ INSTANTIATE_TEST_SUITE_P(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10010",
                 "Memory Semantics Volatile flag must not be used with "
-                "barrier instructions (MemoryBarrier and ControlBarrier)"))));
+                "barrier instructions (MemoryBarrier or ControlBarrier)"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorCompareExchangeUnequalSemanticsWithRelease, VulkanSemantics,
@@ -426,8 +427,8 @@ INSTANTIATE_TEST_SUITE_P(
             Values(TestResult(
                 SPV_ERROR_INVALID_DATA,
                 "VUID-StandaloneSpirv-MemorySemantics-10011",
-                "AtomicCompareExchange Unequal Memory Semantics must have "
-                "Relaxed or Acquire memory order"))));
+                "AtomicCompareExchange Unequal Memory Semantics must not use "
+                "Release or AcquireRelease memory order"))));
 
 INSTANTIATE_TEST_SUITE_P(
     SuccessAtomicsRelaxed, VulkanSemantics,
@@ -506,9 +507,8 @@ INSTANTIATE_TEST_SUITE_P(
         Values(TestResult(
             SPV_ERROR_INVALID_DATA,
             "VUID-StandaloneSpirv-MemorySemantics-10012",
-            "AtomicCompareExchange Unequal Memory Semantics can have Acquire "
-            "memory order only if Equal Memory Semantics have Acquire or "
-            "AcquireRelease memory order"))));
+            "AtomicCompareExchange Unequal Memory Semantics must not use a memory order "
+            "stronger than the Equal Memory Semantics"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorMemoryOrderTooWeakRelease, VulkanSemanticsCmpXchg,
@@ -527,9 +527,8 @@ INSTANTIATE_TEST_SUITE_P(
         Values(TestResult(
             SPV_ERROR_INVALID_DATA,
             "VUID-StandaloneSpirv-MemorySemantics-10012",
-            "AtomicCompareExchange Unequal Memory Semantics can have Acquire "
-            "memory order only if Equal Memory Semantics have Acquire or "
-            "AcquireRelease memory order"))));
+            "AtomicCompareExchange Unequal Memory Semantics must not use a memory order "
+            "stronger than the Equal Memory Semantics"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorMissingStorageClassSemanticsFlags, VulkanSemanticsCmpXchg,
@@ -543,10 +542,11 @@ INSTANTIATE_TEST_SUITE_P(
         Values(TestResult(
             SPV_ERROR_INVALID_DATA,
             "VUID-StandaloneSpirv-MemorySemantics-10013",
-            "AtomicCompareExchange Unequal Memory Semantics must not have any "
-            "storage class semantics flag (UniformMemory, WorkgroupMemory, "
-            "ImageMemory, or OutputMemory) or MakeVisible flag, unless these "
-            "flags are also present in the Equal Memory Semantics"))));
+            "AtomicCompareExchange Unequal Memory Semantics must not use any "
+            "Vulkan-supported storage class semantics flag (UniformMemory, "
+            "WorkgroupMemory, ImageMemory, or OutputMemory) or MakeVisible "
+            "flag, unless this flag is also present in the Equal "
+            "Memory Semantics"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorMissingMakeVisibleFlag, VulkanSemanticsCmpXchg,
@@ -563,10 +563,11 @@ INSTANTIATE_TEST_SUITE_P(
         Values(TestResult(
             SPV_ERROR_INVALID_DATA,
             "VUID-StandaloneSpirv-MemorySemantics-10013",
-            "AtomicCompareExchange Unequal Memory Semantics must not have any "
-            "storage class semantics flag (UniformMemory, WorkgroupMemory, "
-            "ImageMemory, or OutputMemory) or MakeVisible flag, unless these "
-            "flags are also present in the Equal Memory Semantics"))));
+            "AtomicCompareExchange Unequal Memory Semantics must not use any "
+            "Vulkan-supported storage class semantics flag (UniformMemory, "
+            "WorkgroupMemory, ImageMemory, or OutputMemory) or MakeVisible "
+            "flag, unless this flag is also present in the Equal "
+            "Memory Semantics"))));
 
 INSTANTIATE_TEST_SUITE_P(
     ErrorMismatchingVolatileFlagsRelaxedAndRelaxed, VulkanSemanticsCmpXchg,

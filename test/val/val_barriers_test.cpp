@@ -479,7 +479,7 @@ OpControlBarrier %workgroup %invocation %acquire_uniform_workgroup
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("ControlBarrier: Vulkan specification requires Memory "
-                "Semantics to be None if used with Invocation Memory Scope"));
+                "Semantics to be Relaxed if used with Invocation Memory Scope"));
 }
 
 TEST_F(ValidateBarriers, OpControlBarrierAcquireAndRelease) {
@@ -492,8 +492,7 @@ OpControlBarrier %device %device %acquire_and_release_uniform
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("ControlBarrier: Memory Semantics must have at most one "
-                "non-relaxed memory order bit set (Acquire, Release, "
-                "AcquireRelease, or SequentiallyConsistent)"));
+                "non-relaxed memory order bit set"));
 }
 
 TEST_F(ValidateBarriers, OpControlBarrierVulkanSubgroupStorageClass) {
@@ -509,9 +508,8 @@ OpControlBarrier %workgroup %device %acquire_release_subgroup
       getDiagnosticString(),
       HasSubstr(
           "ControlBarrier: Memory Semantics with a non-relaxed memory order "
-          "(Acquire, Release, or AcquireRelease) must have at least one "
-          "storage class semantics flag (UniformMemory, WorkgroupMemory, "
-          "ImageMemory, or OutputMemory)"));
+          "must use at least one Vulkan-supported storage class semantics flag "
+          "(UniformMemory, WorkgroupMemory, ImageMemory, or OutputMemory)"));
 }
 
 TEST_F(ValidateBarriers, OpControlBarrierVulkanAcquireRelease) {
@@ -527,9 +525,8 @@ OpControlBarrier %workgroup %device %acquire_release
       getDiagnosticString(),
       HasSubstr(
           "ControlBarrier: Memory Semantics with a non-relaxed memory order "
-          "(Acquire, Release, or AcquireRelease) must have at least one "
-          "storage class semantics flag (UniformMemory, WorkgroupMemory, "
-          "ImageMemory, or OutputMemory)"));
+          "must use at least one Vulkan-supported storage class semantics flag "
+          "(UniformMemory, WorkgroupMemory, ImageMemory, or OutputMemory)"));
 }
 
 TEST_F(ValidateBarriers, OpControlBarrierVulkanWorkgroupMemory) {
@@ -544,10 +541,9 @@ OpControlBarrier %workgroup %workgroup %workgroup_memory
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr(
-          "ControlBarrier: Memory Semantics with at least one storage class "
-          "semantics flag (UniformMemory, WorkgroupMemory, ImageMemory, or "
-          "OutputMemory) must have a non-relaxed memory order (Acquire, "
-          "Release, or AcquireRelease)"));
+          "ControlBarrier: Memory Semantics with at least one Vulkan-supported"
+          "storage class semantics flag (UniformMemory, WorkgroupMemory, "
+          "ImageMemory, or OutputMemory) must use a non-relaxed memory order"));
 }
 
 TEST_F(ValidateBarriers, OpControlBarrierSubgroupExecutionFragment1p1) {
@@ -840,8 +836,7 @@ OpMemoryBarrier %device %acquire_and_release_uniform
   ASSERT_EQ(SPV_ERROR_INVALID_DATA, ValidateInstructions());
   EXPECT_THAT(getDiagnosticString(),
               HasSubstr("MemoryBarrier: Memory Semantics must have at most one "
-                        "non-relaxed memory order bit set (Acquire, Release, "
-                        "AcquireRelease, or SequentiallyConsistent)"));
+                        "non-relaxed memory order bit set"));
 }
 
 TEST_F(ValidateBarriers, OpMemoryBarrierVulkanMemorySemanticsNone) {
@@ -855,8 +850,7 @@ OpMemoryBarrier %device %none
               AnyVUID("VUID-StandaloneSpirv-MemorySemantics-10004"));
   EXPECT_THAT(
       getDiagnosticString(),
-      HasSubstr("MemoryBarrier must have Acquire, Release, or AcquireRelease "
-                "memory order"));
+      HasSubstr("MemoryBarrier must not use Relaxed memory order"));
 }
 
 TEST_F(ValidateBarriers, OpMemoryBarrierVulkanMemorySemanticsAcquire) {
@@ -870,10 +864,9 @@ OpMemoryBarrier %device %acquire
               AnyVUID("VUID-StandaloneSpirv-MemorySemantics-10007"));
   EXPECT_THAT(getDiagnosticString(),
               HasSubstr("MemoryBarrier: Memory Semantics with a non-relaxed "
-                        "memory order (Acquire, Release, or AcquireRelease) "
-                        "must have at least one storage class semantics flag "
-                        "(UniformMemory, WorkgroupMemory, ImageMemory, "
-                        "or OutputMemory)"));
+                        "memory order must use at least one Vulkan-supported "
+                        "storage class semantics flag (UniformMemory, "
+                        "WorkgroupMemory, ImageMemory, or OutputMemory)"));
 }
 
 TEST_F(ValidateBarriers, OpMemoryBarrierVulkanSubgroupStorageClass) {
@@ -887,10 +880,9 @@ OpMemoryBarrier %device %acquire_release_subgroup
               AnyVUID("VUID-StandaloneSpirv-MemorySemantics-10007"));
   EXPECT_THAT(getDiagnosticString(),
               HasSubstr("MemoryBarrier: Memory Semantics with a non-relaxed "
-                        "memory order (Acquire, Release, or AcquireRelease) "
-                        "must have at least one storage class semantics flag "
-                        "(UniformMemory, WorkgroupMemory, ImageMemory, "
-                        "or OutputMemory)"));
+                        "memory order must use at least one Vulkan-supported "
+                        "storage class semantics flag (UniformMemory, "
+                        "WorkgroupMemory, ImageMemory, or OutputMemory)"));
 }
 
 TEST_F(ValidateBarriers, OpNamedBarrierInitializeSuccess) {
@@ -1005,8 +997,7 @@ OpMemoryNamedBarrier %barrier %workgroup %acquire_and_release
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("MemoryNamedBarrier: Memory Semantics must have "
-                "at most one non-relaxed memory order bit set (Acquire, "
-                "Release, AcquireRelease, or SequentiallyConsistent)"));
+                "at most one non-relaxed memory order bit set"));
 }
 
 TEST_F(ValidateBarriers, TypeAsMemoryScope) {
@@ -1121,7 +1112,7 @@ OpFunctionEnd
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("ControlBarrier: Memory Semantics with MakeAvailable flag "
-                "must have Release or AcquireRelease memory order"));
+                "must use Release or AcquireRelease memory order"));
 }
 
 TEST_F(ValidateBarriers, MakeVisibleKHRRequiresAcquireSemantics) {
@@ -1150,7 +1141,7 @@ OpFunctionEnd
   EXPECT_THAT(
       getDiagnosticString(),
       HasSubstr("ControlBarrier: Memory Semantics with MakeVisible flag "
-                "must have Acquire or AcquireRelease memory order"));
+                "must use Acquire or AcquireRelease memory order"));
 }
 
 TEST_F(ValidateBarriers, MakeAvailableKHRRequiresStorageSemantics) {
@@ -1177,11 +1168,10 @@ OpFunctionEnd
   EXPECT_EQ(SPV_ERROR_INVALID_DATA,
             ValidateInstructions(SPV_ENV_UNIVERSAL_1_3));
   EXPECT_THAT(getDiagnosticString(),
-              HasSubstr("MemoryBarrier: Memory Semantics with a non-relaxed "
-                        "memory order (Acquire, Release, or AcquireRelease) "
-                        "must have at least one storage class semantics flag "
-                        "(UniformMemory, WorkgroupMemory, ImageMemory, "
-                        "or OutputMemory)"));
+              HasSubstr("MemoryBarrier: Memory Semantics with a non-relaxed memory order "
+                        "must use at least one Vulkan-supported storage "
+                        "class semantics flag (UniformMemory, WorkgroupMemory, "
+                        "ImageMemory, or OutputMemory)"));
 }
 
 TEST_F(ValidateBarriers, MakeVisibleKHRRequiresStorageSemantics) {
@@ -1208,11 +1198,10 @@ OpFunctionEnd
   EXPECT_EQ(SPV_ERROR_INVALID_DATA,
             ValidateInstructions(SPV_ENV_UNIVERSAL_1_3));
   EXPECT_THAT(getDiagnosticString(),
-              HasSubstr("MemoryBarrier: Memory Semantics with a non-relaxed "
-                        "memory order (Acquire, Release, or AcquireRelease) "
-                        "must have at least one storage class semantics flag "
-                        "(UniformMemory, WorkgroupMemory, ImageMemory, "
-                        "or OutputMemory)"));
+              HasSubstr("MemoryBarrier: Memory Semantics with a non-relaxed memory order "
+                        "must use at least one Vulkan-supported storage "
+                        "class semantics flag (UniformMemory, WorkgroupMemory, "
+                        "ImageMemory, or OutputMemory)"));
 }
 
 TEST_F(ValidateBarriers, SemanticsSpecConstantShader) {
@@ -1393,7 +1382,7 @@ OpFunctionEnd
   EXPECT_EQ(SPV_ERROR_INVALID_DATA, ValidateInstructions());
   EXPECT_THAT(getDiagnosticString(),
               HasSubstr("Memory Semantics Volatile flag must not be used with "
-                        "barrier instructions (MemoryBarrier and ControlBarrier)"));
+                        "barrier instructions (MemoryBarrier or ControlBarrier)"));
 }
 
 TEST_F(ValidateBarriers, VolatileControlBarrier) {
@@ -1420,7 +1409,7 @@ OpFunctionEnd
   EXPECT_EQ(SPV_ERROR_INVALID_DATA, ValidateInstructions());
   EXPECT_THAT(getDiagnosticString(),
               HasSubstr("Memory Semantics Volatile flag must not be used "
-                        "with barrier instructions (MemoryBarrier and ControlBarrier)"));
+                        "with barrier instructions (MemoryBarrier or ControlBarrier)"));
 }
 
 TEST_F(ValidateBarriers, CooperativeMatrixSpecConstantVolatile) {
