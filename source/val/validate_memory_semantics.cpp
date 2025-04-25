@@ -28,8 +28,9 @@ spv_result_t ValidateMemorySemantics(ValidationState_t& _,
                                      uint32_t memory_scope) {
   const spv::Op opcode = inst->opcode();
   const auto id = inst->GetOperandAs<const uint32_t>(operand_index);
-  const bool validate_vulkan = spvIsVulkanEnv(_.context()->target_env) ||
-                               _.memory_model() == spv::MemoryModel::VulkanKHR;
+  //const bool validate_vulkan = spvIsVulkanEnv(_.context()->target_env) ||
+  //                             _.memory_model() == spv::MemoryModel::VulkanKHR;
+  const bool validate_vulkan = true;
   bool is_int32 = false, is_const_int32 = false;
   uint32_t value = 0;
   std::tie(is_int32, is_const_int32, value) = _.EvalInt32IfConst(id);
